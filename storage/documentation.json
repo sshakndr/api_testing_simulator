@@ -1,0 +1,673 @@
+[
+    {
+        "route": "/api/register",
+        "type": "POST",
+        "description": "Creating new user",
+        "params": {
+            "body": [
+                {
+                    "name": "nickname",
+                    "type": "string",
+                    "required": true,
+                    "description": "name of new user"
+                },
+                {
+                    "name": "password",
+                    "type": "string",
+                    "required": true,
+                    "description": "password for new users account"
+                },
+                {
+                    "name": "email",
+                    "type": "string",
+                    "required": true,
+                    "description": "email of new user"
+                }
+            ],
+            "query": [],
+            "params": []
+        },
+        "bodyExample":{
+            "nickname": "newguy42",
+            "email": "newguy42@mail.com",
+            "password": "qwerty123"
+        },
+        "responses": [
+            {
+                "code": 201,
+                "answer": [
+                    {
+                        "name": "id",
+                        "type": "int",
+                        "description": "created users ID"
+                    },
+                    {
+                        "name": "nickname",
+                        "type": "string",
+                        "description": "created users nickname"
+                    },
+                    {
+                        "name": "email",
+                        "type": "string",
+                        "description": "created users email"
+                    },
+                    {
+                        "name": "avatar",
+                        "type": "null",
+                        "description": "empty field with users avatar"
+                    }
+                ]
+            },
+            {
+                "code": 400,
+                "answer": "Bad Request"
+            },
+            {
+                "code": 200,
+                "answer": "This nickname is already taken"
+            }
+        ]
+    },
+    {
+        "route": "/api/login",
+        "type": "POST",
+        "description": "Login request",
+        "params": {
+            "body": [
+                {
+                    "name": "nickname",
+                    "type": "string",
+                    "required": true,
+                    "description": "users nickname"
+                },
+                {
+                    "name": "password",
+                    "type": "string",
+                    "required": true,
+                    "description": "users password"
+                }
+            ],
+            "query": [],
+            "params": []
+        },
+        "bodyExample":{
+            "nickname": "newguy42",
+            "password": "qwerty123"
+        },
+        "responses": [
+            {
+                "code": 200,
+                "answer": [
+                    {
+                        "name": "id",
+                        "type": "int",
+                        "description": "ID of logged in user"
+                    },
+                    {
+                        "name": "token",
+                        "type": "string/jwt",
+                        "description": "jwt token of logged in user"
+                    }
+                ]
+            },
+            {
+                "code": 400,
+                "answer": "Bad Request"
+            },
+            {
+                "code": 404,
+                "answer": "User Not Found"
+            },
+            {
+                "code": 200,
+                "answer": "Incorrect password"
+            }
+        ]
+    },
+    {
+        "route": "/api/users",
+        "type": "GET",
+        "description": "Getting list of users",
+        "params": {
+            "body": [],
+            "query": [
+                {
+                    "name": "page",
+                    "type": "int",
+                    "required": false,
+                    "description": "number of page with users"
+                },
+                {
+                    "name": "pagination",
+                    "type": "int",
+                    "required": false,
+                    "description": "count of users on one page"
+                }
+            ],
+            "params": []
+        },
+        "responses": [
+            {
+                "code": 200,
+                "list": true,
+                "answer": [
+                    {
+                        "name": "id",
+                        "type": "int",
+                        "description": "user ID"
+                    },
+                    {
+                        "name": "nickname",
+                        "type": "string",
+                        "description": "users nickname"
+                    },
+                    {
+                        "name": "email",
+                        "type": "string",
+                        "description": "users email"
+                    },
+                    {
+                        "name": "avatar",
+                        "type": "string | null",
+                        "description": "url to user avatar"
+                    }
+                ]
+            },
+            {
+                "code": 400,
+                "answer": "Bad Request"
+            }
+        ]
+    },
+    {
+        "route": "/api/users/:id",
+        "type": "GET",
+        "description": "Getting one user by ID",
+        "params": {
+            "body": [],
+            "query": [ ],
+            "params": [
+                {
+                    "name": "id",
+                    "type": "int",
+                    "required": true,
+                    "description": "users ID"
+                }
+            ]
+        },
+        "responses": [
+            {
+                "code": 200,
+                "answer": [
+                    {
+                        "name": "id",
+                        "type": "int",
+                        "description": "user ID"
+                    },
+                    {
+                        "name": "nickname",
+                        "type": "string",
+                        "description": "users nickname"
+                    },
+                    {
+                        "name": "email",
+                        "type": "string",
+                        "description": "users email"
+                    },
+                    {
+                        "name": "avatar",
+                        "type": "string | null",
+                        "description": "url to user avatar"
+                    }
+                ]
+            },
+            {
+                "code": 400,
+                "answer": "Bad Request"
+            },
+            {
+                "code": 404,
+                "answer": "User Not Found"
+            }
+        ]
+    },
+    {
+        "route": "/api/users/:id",
+        "type": "PUT",
+        "description": "Update user",
+        "params": {
+            "body": [
+                {
+                    "name": "nickname",
+                    "type": "string",
+                    "required": false,
+                    "description": "new nickname for user"
+                },
+                {
+                    "name": "email",
+                    "type": "string",
+                    "required": false,
+                    "description": "new email for user"
+                },
+                {
+                    "name": "avatar",
+                    "type": "string",
+                    "required": false,
+                    "description": "url to new avatar for user"
+                },
+                {
+                    "name": "password",
+                    "type": "string",
+                    "required": false,
+                    "description": "new password for user"
+                }
+            ],
+            "query": [],
+            "params": [
+                {
+                    "name": "id",
+                    "type": "int",
+                    "required": true,
+                    "description": "ID of changed user"
+                }
+            ]
+        },
+        "bodyExample":{
+            "nickname":"newguy43",
+            "email":"newguy43@mail.com",
+            "avatar": "https://thumbs.dreamstime.com/b/male-avatar-icon-flat-style-male-user-icon-cartoon-man-avatar-hipster-vector-stock-91462914.jpg",
+            "password":"qwerty12345"
+        },
+        "responses": [
+            {
+                "code": 200,
+                "answer": [
+                    {
+                        "name": "nickname",
+                        "type": "string",
+                        "description": "new users nickname"
+                    },
+                    {
+                        "name": "email",
+                        "type": "string",
+                        "description": "new users email"
+                    },
+                    {
+                        "name": "avatar",
+                        "type": "string",
+                        "description": "url to new users avatar"
+                    },
+                    {
+                        "name": "password",
+                        "type": "string",
+                        "description": "new users password"
+                    }
+                ]
+            },
+            {
+                "code": 404,
+                "answer": "User Not Found"
+            },
+            {
+                "code": 400,
+                "answer": "Bad Request"
+            }
+        ]
+    },
+    {
+        "route": "/api/users/:id",
+        "type": "DELETE",
+        "description": "Delete user by ID",
+        "params": {
+            "body": [],
+            "query": [],
+            "params": [
+                {
+                    "name": "id",
+                    "type": "int",
+                    "required": true,
+                    "description": "ID of user to delete"
+                }
+            ]
+        },
+        "responses": [
+            {
+                "code": 204,
+                "answer": "User Deleted"
+            },
+            {
+                "code": 400,
+                "answer": "Bad Request"
+            }
+        ]
+    },
+    {
+        "route": "/api/resources",
+        "type": "GET",
+        "description": "Get list of resorces",
+        "params": {
+            "body": [],
+            "query": [
+                {
+                    "name": "page",
+                    "type": "int",
+                    "required": false,
+                    "description": "number of page with resources"
+                },
+                {
+                    "name": "pagination",
+                    "type": "int",
+                    "required": false,
+                    "description": "count of resouces on one page"
+                }
+            ],
+            "params": []
+        },
+        "responses": [
+            {
+                "code": 200,
+                "list": true,
+                "answer": [
+                    {
+                        "name": "id",
+                        "type": "int",
+                        "description": "resource ID"
+                    },
+                    {
+                        "name": "authorid",
+                        "type": "int",
+                        "description": "author of resource ID"
+                    },
+                    {
+                        "name": "authorname",
+                        "type": "string",
+                        "description": "author of resource nickname"
+                    },
+                    {
+                        "name": "name",
+                        "type": "string",
+                        "description": "name of resource"
+                    },
+                    {
+                        "name": "data",
+                        "type": "string",
+                        "description": "resource data"
+                    },
+                    {
+                        "name": "color",
+                        "type": "string | color",
+                        "description": "resource color"
+                    }
+                ]
+            },
+            {
+                "code": 400,
+                "answer": "Bad Request"
+            }
+        ]
+    },
+    {
+        "route": "/api/resources/:id",
+        "type": "GET",
+        "description": "Get one resource by ID",
+        "params": {
+            "body": [],
+            "query": [],
+            "params": [
+                {
+                    "name": "id",
+                    "type": "int",
+                    "required": true,
+                    "description": "resource ID"
+                }
+            ]
+        },
+        "responses": [
+            {
+                "code": 200,
+                "answer": [
+                    {
+                        "name": "id",
+                        "type": "int",
+                        "description": "resource ID"
+                    },
+                    {
+                        "name": "authorid",
+                        "type": "int",
+                        "description": "author of resource ID"
+                    },
+                    {
+                        "name": "authorname",
+                        "type": "string",
+                        "description": "author of resource nickname"
+                    },
+                    {
+                        "name": "name",
+                        "type": "string",
+                        "description": "name of resource"
+                    },
+                    {
+                        "name": "data",
+                        "type": "string",
+                        "description": "resource data"
+                    },
+                    {
+                        "name": "color",
+                        "type": "string | color",
+                        "description": "resource color"
+                    }
+                ]
+            },
+            {
+                "code": 404,
+                "answer": "Resource Not Found"
+            },
+            {
+                "code": 400,
+                "answer": "Bad Request"
+            }
+        ]
+    },
+    {
+        "route": "/api/resources",
+        "type": "POST",
+        "description": "Create new resource",
+        "params": {
+            "body": [
+                {
+                    "name": "authorid",
+                    "type": "int",
+                    "required": true,
+                    "description": "author ID of new resource"
+                },
+                {
+                    "name": "name",
+                    "type": "string",
+                    "required": true,
+                    "description": "name of new resource"
+                },
+                {
+                    "name": "data",
+                    "type": "string",
+                    "required": true,
+                    "description": "data for new resource"
+                },
+                {
+                    "name": "color",
+                    "type": "string | color",
+                    "required": true,
+                    "description": "color for new resource"
+                }
+            ],
+            "query": [],
+            "params": []
+        },
+        "bodyExample":{
+            "authorid": 1,
+            "name": "newresource",
+            "data": "Awesome data for new resorce",
+            "color": "#916411"
+        },
+        "responses": [
+            {
+                "code": 200,
+                "answer": [
+                    {
+                        "name": "id",
+                        "type": "int",
+                        "description": "resource ID"
+                    },
+                    {
+                        "name": "authorid",
+                        "type": "int",
+                        "description": "author of resource ID"
+                    },
+                    {
+                        "name": "authorname",
+                        "type": "string",
+                        "description": "author of resource nickname"
+                    },
+                    {
+                        "name": "name",
+                        "type": "string",
+                        "description": "name of resource"
+                    },
+                    {
+                        "name": "data",
+                        "type": "string",
+                        "description": "resource data"
+                    },
+                    {
+                        "name": "color",
+                        "type": "string | color",
+                        "description": "resource color"
+                    }
+                ]
+            },
+            {
+                "code": 400,
+                "answer": "Bad Request"
+            }
+        ]
+    },
+    {
+        "route": "/api/resources",
+        "type": "PUT",
+        "description": "Update resource",
+        "params": {
+            "body": [
+                {
+                    "name": "id",
+                    "type": "int",
+                    "required": true,
+                    "description": "resource ID"
+                },
+                {
+                    "name": "name",
+                    "type": "string",
+                    "required": false,
+                    "description": "new name for resource"
+                },
+                {
+                    "name": "data",
+                    "type": "string",
+                    "required": false,
+                    "description": "new resource data"
+                },
+                {
+                    "name": "color",
+                    "type": "string | color",
+                    "required": false,
+                    "description": "new resource color"
+                }
+            ],
+            "query": [],
+            "params": []
+        },
+        "bodyExample":{
+            "id": 1,
+            "name": "new resource name",
+            "data": "new data for resource",
+            "color": "#FF00FF"
+        },
+        "responses": [
+            {
+                "code": 200,
+                "answer": [
+                    {
+                        "name": "id",
+                        "type": "int",
+                        "description": "resource ID"
+                    },
+                    {
+                        "name": "authorid",
+                        "type": "int",
+                        "description": "author of resource ID"
+                    },
+                    {
+                        "name": "authorname",
+                        "type": "string",
+                        "description": "author of resource nickname"
+                    },
+                    {
+                        "name": "name",
+                        "type": "string",
+                        "description": "name of resource"
+                    },
+                    {
+                        "name": "data",
+                        "type": "string",
+                        "description": "resource data"
+                    },
+                    {
+                        "name": "color",
+                        "type": "string | color",
+                        "description": "resource color"
+                    }
+                ]
+            },
+            {
+                "code": 400,
+                "answer": "Bad Request"
+            },
+            {
+                "code": 404,
+                "answer": "Resource Not Found"
+            }
+        ]
+    },
+    {
+        "route": "/api/resources",
+        "type": "DELETE",
+        "description": "Delete resource",
+        "params": {
+            "body": [
+                {
+                    "name": "id",
+                    "type": "int",
+                    "required":true,
+                    "description": "resource ID"
+                }
+            ],
+            "query": [],
+            "params": []
+        },
+        "bodyExample":{
+            "id": 2
+        },
+        "responses": [
+            {
+                "code": 204,
+                "answer": "Resource Deleted"
+            },
+            {
+                "code": 400,
+                "answer": "Bad Request"
+            },
+            {
+                "code": 404,
+                "answer": "Resource Not Found"
+            }
+        ]
+    }
+]

@@ -1,0 +1,152 @@
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8">
+    <title>API testing simulator</title>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" />
+  </head>
+  <body>
+    <h1 class="center"><b>API testing simulator</b></h1>
+    <br>
+    <div class="frame">
+      <div class="row">
+        <div class="column">
+          <% for(let i=0;i<documentation.length;i++){ %>
+            <div id="requestButton" class="frame minibutton flexline" data-body="<%= documentation[i].bodyExample?JSON.stringify(documentation[i].bodyExample,2):"" %>">
+              <b><%= documentation[i].type %></b>
+              <div><%= documentation[i].route %></div>
+            </div>
+          <% } %>
+        </div>
+        <div class="column">
+          <div class="router-column"><b>request</b></div>
+          <input id="requestInput" class="route-input" type="text">
+          <textarea id="bodyArea" class="route-input body" type="text" ></textarea>
+        </div>
+        <div class="column">
+          <div class="router-column"><b>response</b></div>
+          <div class="frame mini flexline problem">
+            <b id="statusLine"></b>
+            <div class="required not">*</div>
+            <div id="responseStatus" class="okstatus"></div>
+          </div>
+          <textarea id="responseBody" class="route-input body res" type="text"></textarea>
+        </div>
+      </div>
+      <div><div id="sendButton" class="frame send disabled">Send</div></div>
+    </div>
+    <br>
+    <div class="row freespace">
+      <div id="Documentation" class="firstfree"><b>Documentation</b></div>
+      <div id="changeErrors" class="freebutton">show errors</div>
+      <div id="Errors" class="lastfree disabled"><b>Errors in API</b></div>
+    </div>
+    <br>
+    <div class="row block">
+      <div id="DocumentationBlock" class="switch">
+        <% for(let i = 0; i < documentation.length; i++) {%>
+          <div class="frame inner" name="docroutes">
+            <div id="apiRoute" name="<%= documentation[i].route.replaceAll("/","_").replace(":","-")+i %>" class="row pointer closed">
+              <div class="rtype <%= documentation[i].type.toLowerCase() %>"><b><%= documentation[i].type %></b></div>
+              <div class="rpath"><%= documentation[i].route %></div>
+              <div class="rdescription"><%= documentation[i].description %></div>
+              <img src="images/triangle.svg" class="triangle">
+            </div>
+            <div id="<%= documentation[i].route.replaceAll("/","_").replace(":","-")+i %>" class="info">
+              <div class="row margin">
+                <div class="frame dashed column">
+                  <% if (documentation[i].params.params.length !== 0) {%>
+                    <div>
+                      <div><b>Key param : type</b></div>
+                      <% for(let j=0;j<documentation[i].params.params.length;j++) {%>
+                        <div class="row <%= documentation[i].type.toLowerCase()  %>" data-tooltip="<%= documentation[i].params.params[j].description %>">
+                          <div class="flexline">
+                            <div><%= documentation[i].params.params[j].name %></div>
+                            <div class="required <%= documentation[i].params.params[j].required?"":"not" %>">*</div>
+                            <div><%= ' : ' + documentation[i].params.params[j].type %></div>
+                          </div>
+                        </div>
+                      <% } %>
+                    </div>
+                  <% } %>
+                  <% if (documentation[i].params.body.length !== 0) {%>
+                    <div>
+                      <div><b>Body attribute : type</b></div>
+                      <% for(let j=0;j<documentation[i].params.body.length;j++) {%>
+                        <div class="row <%= documentation[i].type.toLowerCase()  %>" data-tooltip="<%= documentation[i].params.body[j].description %>">
+                          <div class="flexline">
+                            <div><%= documentation[i].params.body[j].name %></div>
+                            <div class="required <%= documentation[i].params.body[j].required?"":"not" %>">*</div>
+                            <div><%= ' : ' + documentation[i].params.body[j].type %></div>
+                          </div>
+                        </div>
+                      <% } %>
+                    </div>
+                  <% } %>
+                  <% if (documentation[i].params.query.length !== 0) {%>
+                    <div>
+                      <div><b>Querry param : type</b></div>
+                      <% for(let j=0;j<documentation[i].params.query.length;j++) {%>
+                        <div class="row <%= documentation[i].type.toLowerCase()  %>" data-tooltip="<%= documentation[i].params.query[j].description %>">
+                          <div class="flexline">
+                            <div><%= documentation[i].params.query[j].name %></div>
+                            <div class="required <%= documentation[i].params.query[j].required?"":"not" %>">*</div>
+                            <div><%= ' : ' + documentation[i].params.query[j].type %></div>
+                          </div>
+                        </div>
+                      <% } %>
+                    </div>
+                  <% } %>
+                  <% if((documentation[i].params.query[0] && documentation[i].params.query[0].required) || (documentation[i].params.body[0] && documentation[i].params.body[0].required) || (documentation[i].params.params[0] && documentation[i].params.params[0].required)){ %>
+                    <br>
+                    <div class="flexline">
+                      <div>[</div>
+                      <div class="required">*</div>
+                      <div class="required not">*</div>
+                      <div> means required]</div>
+                    </div>
+                  <% } %>
+                </div>
+                <div class="frame dashed column">
+                  <% for (let j=0;j<documentation[i].responses.length;j++){ %>
+                    <div class="response">
+                      <div class="flexline">
+                        <div><b>Code : </b></div>
+                        <div class="required not">*</div>
+                        <div class="<%= documentation[i].responses[j].code.toString()[0] == '2'?'okstatus':'okstatus not' %>"><%= documentation[i].responses[j].code %></div>
+                      </div>
+                      <% if(typeof documentation[i].responses[j].answer == 'string'){ %>
+                        <div class="flexline">
+                          <b>Response : </b>
+                          <div class="required not">*</div>
+                          <div><%= documentation[i].responses[j].answer %></div>
+                        </div>
+                      <% }else{ %>
+                        <div><b>Body attribute : type</b></div>
+                        <% for(let l=0;l<documentation[i].responses[j].answer.length;l++){ %>
+                          <div class="row <%= documentation[i].type.toLowerCase()%>" data-tooltip="<%= documentation[i].responses[j].answer[l].description %>">
+                            <div><%= [documentation[i].responses[j].answer[l].name," : ",documentation[i].responses[j].answer[l].type].join('') %></div>
+                          </div>
+                        <% } %>
+                      <% } %>
+                    </div>
+                  <% } %>
+                </div>
+              </div>
+            </div>
+          </div>
+        <% } %>
+      </div>
+      <div id="ErrorsBlock" class="switch disabled extramargin">
+        <div class="frame inner dashed center">
+          <% for(let i=0;i<apiErrors.length;i++){ %>
+            <div name="errs" class="nodisplay oneerror <%= i%2==0?'left':'right' %><%= [' s',i%3].join('-') %>"><b><%= apiErrors[i] %></b></div>
+          <% } %>
+        </div>
+      </div>
+    </div>
+    <br>
+    <div class="center"><b id="author">by sshakndr</b></div>
+    <script type="text/javascript" src="javascripts/jquery-3.6.4.min.js"></script>
+    <script type="text/javascript" src="javascripts/jscript.js"></script>
+  </body>
+</html>

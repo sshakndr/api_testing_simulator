@@ -1,0 +1,10 @@
+[
+    "[/api/register] Returns \"This nickname is already taken\" with 201 status(created)",
+    "[GET /api/users/:id] Returns user object with password",
+    "[PUT /api/users] Doesn't check request body attributes",
+    "[DELETE /api/users] Doesn't remove user and check for existense",
+    "[GET /api/resorces] Ignores {pagination} query param",
+    "[POST /api/resorces] Puts \"admin\" in new resorce's {authorname} field",
+    "[PUT /api/resorces] Succsessful response doesn't match the documentation",
+    "General API heterogeneity"
+]
