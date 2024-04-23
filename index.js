@@ -1,6 +1,7 @@
 const express = require("express");
 const jwt = require("jsonwebtoken");
 const bodyParser = require("body-parser");
+const NodeCache = require("node-cache");
 const app = express();
 const docs = require("./storage/documentation.json");
 const errs = require("./storage/errors.json");
@@ -8,10 +9,14 @@ const errs = require("./storage/errors.json");
 app.use(bodyParser.json());
 app.use(express.static(__dirname + '/public'));
 
+const standartTTL = 86400;
+const usersCache = new NodeCache({stdTTL: standartTTL, checkperiod: 3600, useClones: false});
+const resourcesCache = new NodeCache({stdTTL: standartTTL, checkperiod: 3600, useClones: false});
+
 const secretkey = 'upd';
 // const documentation = JSON.parse(docs);
 
-var users = [
+var usersBase = [
     {
         id: 0,
         nickname: 'admin',
@@ -90,7 +95,7 @@ var users = [
         password: 'sergeikrutoi_super123',
     },
 ];
-var resourses = [
+var resourcesBase = [
     {
         id: 0,
         authorname: 'admin',
@@ -182,6 +187,34 @@ var resourses = [
     
 ];
 
+function getAddr(req){
+    return req.headers['x-forwarded-for'] || req.socket.remoteAddress;
+}
+
+function getUsers(req){
+    let addr = getAddr(req);
+    let users = usersCache.get(addr);
+    if (users !== undefined) {
+        return users;
+    } else {
+        usersCache.set(addr, usersBase);
+        users = usersCache.get(addr);
+        return users;
+    }
+} 
+
+function getResources(req){
+    let addr = getAddr(req);
+    let resources = resourcesCache.get(addr);
+    if (resources !== undefined) {
+        return resources;
+    } else {
+        resourcesCache.set(addr, resourcesBase);
+        resources = resourcesCache.get(addr);
+        return resources;
+    }
+} 
+
 app.set('view engine', 'ejs');
 
 app.get("/", function(request, response){
@@ -193,6 +226,7 @@ app.get("/", function(request, response){
 
 app.post("/api/register", function(request,response){
     try{
+        let users = getUsers(request);
         let {nickname,password,email} = request.body;
         if (users.filter((user)=>{return user.nickname==nickname}).length != 0) response.status(201).send("This nickname is already taken");
         else {
@@ -215,6 +249,7 @@ app.post("/api/register", function(request,response){
 });
 
 app.post("/api/login", function(request,response){
+    let users = getUsers(request);
     let {nickname, password} = request.body;
     if(!nickname || !password) response.status(400).send("Bad Request");
     else {
@@ -228,6 +263,7 @@ app.post("/api/login", function(request,response){
 });
 
 app.get("/api/users", function(request,response){
+    let users = getUsers(request);
     let {page, pagination} = request.query;
     if ((page && !/^\d+$/.test(page)) || (pagination && !/^\d+$/.test(pagination))) response.status(400).send("Bad Request");
     else {
@@ -240,6 +276,7 @@ app.get("/api/users", function(request,response){
 });
 
 app.get("/api/users/:id", function(request,response){
+    let users = getUsers(request);
     let id = request.params.id;
     if ((id && !/^\d+$/.test(id))) response.status(400).send("Bad Request");
     else {
@@ -250,6 +287,7 @@ app.get("/api/users/:id", function(request,response){
 });
 
 app.put("/api/users/:id", function(request,response){
+    let users = getUsers(request);
     let id = request.params.id;
     let user = request.body;
     if (!/^\d+$/.test(id) || !user) response.status(400).send("Bad Request");
@@ -267,26 +305,29 @@ app.put("/api/users/:id", function(request,response){
 });
 
 app.delete("/api/users/:id",function(request,response){
+    let users = getUsers(request);
     let id = request.params.id;
     if (!/^\d+$/.test(id)) response.status(400).send("Bad Request");
     else response.status(204).send("User Deleted");
 });
 
 app.get("/api/resources", function(request,response){
+    let resources = getResources(request);
     let {page} = request.query;
     if (page && !/^\d+$/.test(page)) {
         response.status(400).send("Bad Request");
     } else {
         p = page? page-1 : 0;
-        let resres = resourses.slice(p*10,page?p*10+10:resourses.length);
+        let resres = resources.slice(p*10,page?p*10+10:resources.length);
         response.json(resres);
     }
 });
 
 app.get("/api/resources/:id", function(request,response){
+    let resources = getResources(request);
     let id = request.params.id;
     if (/^\d+$/.test(id)) {
-        let resourse = resourses.filter(r=>{return r.id == id})[0];
+        let resourse = resources.filter(r=>{return r.id == id})[0];
         if (!resourse) response.status(404).send("Resource Not Found");
         else response.json(resourse);
     } else {
@@ -295,28 +336,30 @@ app.get("/api/resources/:id", function(request,response){
 });
 
 app.post("/api/resources",function(request,response){
+    let resources = getResources(request);
     let {authorid, name, data, color} = request.body;
-    if (!authorid || !name || !data || !color || !/^\d+$/.test(authorid.toString()) || !/#[a-f0-9]{6}\b/gi.test(color)) response.status(400).send("Bad Request");
+    if (authorid === undefined || !name || !data || !color || !/^\d+$/.test(authorid.toString()) || !/#[a-f0-9]{6}\b/gi.test(color)) response.status(400).send("Bad Request");
     else {
         let newres = {
-            id: resourses[resourses.length-1].id + 1,
+            id: resources[resources.length-1].id + 1,
             authorid: authorid,
             authorname: 'admin',
             name: name,
             data: data,
             color: color
         }
-        resourses.push(newres);
+        resources.push(newres);
         response.json(newres);
     }
 });
 
 app.put("/api/resources",function(request,response){
+    let resources = getResources(request);
     let {id, name, data, color} = request.body;
-    if (!id || !/^\d+$/.test(id) || (color && !/#[a-f0-9]{6}\b/gi.test(color))) response.status(400).send("Bad Request");
+    if (id === undefined || !/^\d+$/.test(id) || (color && !/#[a-f0-9]{6}\b/gi.test(color))) response.status(400).send("Bad Request");
     else {
         let count = 0;
-        resourses.forEach(r=>{
+        resources.forEach(r=>{
             if (r.id == id){
                 r.name = name? name : r.name;
                 r.data = data? data : r.data;
@@ -324,23 +367,23 @@ app.put("/api/resources",function(request,response){
                 count++;
             }
         });
-        console.log(count)
         if(count==0) response.status(404).send("Resource Not Found")
         else response.send("Resource Updated");
     }
 });
 
 app.delete("/api/resources", function(request,response){
+    let resources = getResources(request);
     let {id} = request.body;
-    if (!id || !/^\d+$/.test(id)) response.status(400).send("Bad Request");
+    if (id === undefined || !/^\d+$/.test(id)) response.status(400).send("Bad Request");
     else {
-        let ress = resourses.filter(r=>{return r.id !== id});
-        if (ress.length == resourses.length) response.status(404).send("Resource Not Found");
+        let ress = resources.filter(r=>{return r.id !== id});
+        if (ress.length == resources.length) response.status(404).send("Resource Not Found");
         else{
-            resourses = structuredClone(ress);
+            resourcesCache.set(getAddr(request), ress);
             response.status(204).send("Resource Deleted");
         }
     }
 });
-// console.log(docs)
+
 app.listen(3000);
