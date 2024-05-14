@@ -188,7 +188,9 @@ var resourcesBase = [
 ];
 
 function getAddr(req){
-    return req.headers['x-forwarded-for'] || req.socket.remoteAddress;
+    let addr = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
+    let auth = req.headers['authorization'] || null;
+    return addr+auth;
 }
 
 function getUsers(req){

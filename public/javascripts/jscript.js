@@ -1,5 +1,16 @@
+var authKey;
+
 if (typeof jQuery != "undefined") {
     jq = jQuery.noConflict();
+
+    jq(document).ready(function(){
+        let key = localStorage.getItem("authKey");
+        if (!key) {
+            key = Date.now() + "" + Math.random();
+            localStorage.setItem("authKey", key);
+        }
+        authKey = key;
+    });
 
     jq(document).on("click","#apiRoute",function(){
         const currentElement = jq(this);
@@ -69,7 +80,8 @@ if (typeof jQuery != "undefined") {
         let request = await fetch(window.location.origin + jq("#requestInput").val(),{
             method: jq("#requestInput").attr("placeholder"),
             headers: {
-              'Content-Type': 'application/json;charset=utf-8'
+              'Content-Type': 'application/json;charset=utf-8',
+              'Authorization': authKey,
             },
             body: jq("#bodyArea").val()?jq("#bodyArea").val():null
         });
