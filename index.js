@@ -3,8 +3,13 @@ const jwt = require("jsonwebtoken");
 const bodyParser = require("body-parser");
 const NodeCache = require("node-cache");
 const app = express();
+
 const docs = require("./storage/documentation.json");
 const errs = require("./storage/errors.json");
+const description = require("./storage/description.json");
+const docsRu = require("./storage/documentation_ru.json");
+const errsRu = require("./storage/errors_ru.json");
+const descriptionRu = require("./storage/description_ru.json");
 
 app.use(bodyParser.json());
 app.use(express.static(__dirname + '/public'));
@@ -221,8 +226,17 @@ app.set('view engine', 'ejs');
 
 app.get("/", function(request, response){
     response.render("index",{
+        documentation: docsRu,
+        apiErrors: errsRu,
+        description: descriptionRu
+    });
+});
+
+app.get("/en", function(request, response){
+    response.render("index",{
         documentation: docs,
-        apiErrors: errs
+        apiErrors: errs,
+        description: description
     });
 });
 

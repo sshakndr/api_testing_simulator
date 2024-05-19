@@ -1,0 +1,18 @@
+{
+    "toLanguage": "en",
+    "flagIconText": "english page",
+    "title": "Симулятор тестирования API",
+    "request": "запрос",
+    "response": "ответ",
+    "send": "Отправить",
+    "documentation": "Документация",
+    "showErrors": "показать ошибки",
+    "showDocumentation": "показать документацию",
+    "errorsInAPI": "Ошибки API",
+    "keyParam": "Ключ-параметр : тип",
+    "bodyAttribute": "Атрибут тела : тип",
+    "queryParam": "Query-параметр : тип",
+    "meansRequired": "обязательный атрибут]",
+    "code": "Код :",
+    "res": "Ответ : "
+}

@@ -35,11 +35,14 @@ if (typeof jQuery != "undefined") {
 
     jq(document).on("click","#changeErrors",function(){
         const currentElement = jq(this);
-        let changeTo = currentElement.text();
-        if (changeTo === "show errors") {
+        let changeTo = currentElement.attr("data-mode");
+        let text = jq(this).text()
+        if (changeTo === "docs") {
             jq("#Documentation").addClass("disabled");
             jq("#Errors").removeClass("disabled");
-            jq(this).text("show documentation");
+            jq(this).text(jq(this).attr("data-alt"));
+            jq(this).attr("data-mode","errs");
+            jq(this).attr("data-alt", text);
             jq("#DocumentationBlock").addClass("disabled");
             jq("#ErrorsBlock").removeClass("disabled");
             jq("div[name='docroutes']").addClass("nodisplay");
@@ -48,7 +51,9 @@ if (typeof jQuery != "undefined") {
         } else {
             jq("#Documentation").removeClass("disabled");
             jq("#Errors").addClass("disabled");
-            jq(this).text("show errors");
+            jq(this).text(jq(this).attr("data-alt"));
+            jq(this).attr("data-mode","docs");
+            jq(this).attr("data-alt", text);
             jq("#DocumentationBlock").removeClass("disabled");
             jq("#ErrorsBlock").addClass("disabled");
             jq("div[name='docroutes']").removeClass("nodisplay");

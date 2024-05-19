@@ -300,6 +300,15 @@ body{
     text-align: center;
 }
 
+.settings{
+    position: absolute;
+    top: 10px;
+    right: 10px;
+}
+.flagicon{
+    width: 30px;
+}
+
 /* MEDIA */
 /* @media (min-width: 1280px)  and (max-width: 1380px){
     .frame.mini.problem{

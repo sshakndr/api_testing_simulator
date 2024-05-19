@@ -1,0 +1,673 @@
+[
+    {
+        "route": "/api/register",
+        "type": "POST",
+        "description": "Создание нового пользователя",
+        "params": {
+            "body": [
+                {
+                    "name": "nickname",
+                    "type": "string",
+                    "required": true,
+                    "description": "имя нового пользователя"
+                },
+                {
+                    "name": "password",
+                    "type": "string",
+                    "required": true,
+                    "description": "пароль от аккаунта нового пользователя"
+                },
+                {
+                    "name": "email",
+                    "type": "string",
+                    "required": true,
+                    "description": "почта нового пользователя"
+                }
+            ],
+            "query": [],
+            "params": []
+        },
+        "bodyExample":{
+            "nickname": "newguy42",
+            "email": "newguy42@mail.com",
+            "password": "qwerty123"
+        },
+        "responses": [
+            {
+                "code": 201,
+                "answer": [
+                    {
+                        "name": "id",
+                        "type": "int",
+                        "description": "ID созданного пользователя"
+                    },
+                    {
+                        "name": "nickname",
+                        "type": "string",
+                        "description": "имя созданного пользователя"
+                    },
+                    {
+                        "name": "email",
+                        "type": "string",
+                        "description": "почта созданного пользователя"
+                    },
+                    {
+                        "name": "avatar",
+                        "type": "null",
+                        "description": "пустая строка для ссылки на аватар"
+                    }
+                ]
+            },
+            {
+                "code": 400,
+                "answer": "Bad Request"
+            },
+            {
+                "code": 200,
+                "answer": "This nickname is already taken"
+            }
+        ]
+    },
+    {
+        "route": "/api/login",
+        "type": "POST",
+        "description": "Запрос на вход в аккаунт",
+        "params": {
+            "body": [
+                {
+                    "name": "nickname",
+                    "type": "string",
+                    "required": true,
+                    "description": "имя пользователя"
+                },
+                {
+                    "name": "password",
+                    "type": "string",
+                    "required": true,
+                    "description": "пароль от аккаунта"
+                }
+            ],
+            "query": [],
+            "params": []
+        },
+        "bodyExample":{
+            "nickname": "newguy42",
+            "password": "qwerty123"
+        },
+        "responses": [
+            {
+                "code": 200,
+                "answer": [
+                    {
+                        "name": "id",
+                        "type": "int",
+                        "description": "ID пользователя"
+                    },
+                    {
+                        "name": "token",
+                        "type": "string/jwt",
+                        "description": "jwt токен"
+                    }
+                ]
+            },
+            {
+                "code": 400,
+                "answer": "Bad Request"
+            },
+            {
+                "code": 404,
+                "answer": "User Not Found"
+            },
+            {
+                "code": 200,
+                "answer": "Incorrect password"
+            }
+        ]
+    },
+    {
+        "route": "/api/users",
+        "type": "GET",
+        "description": "Получение списка пользователей",
+        "params": {
+            "body": [],
+            "query": [
+                {
+                    "name": "page",
+                    "type": "int",
+                    "required": false,
+                    "description": "номер страницы"
+                },
+                {
+                    "name": "pagination",
+                    "type": "int",
+                    "required": false,
+                    "description": "кол-во пользователей на странице"
+                }
+            ],
+            "params": []
+        },
+        "responses": [
+            {
+                "code": 200,
+                "list": true,
+                "answer": [
+                    {
+                        "name": "id",
+                        "type": "int",
+                        "description": "ID пользователя"
+                    },
+                    {
+                        "name": "nickname",
+                        "type": "string",
+                        "description": "имя пользователя"
+                    },
+                    {
+                        "name": "email",
+                        "type": "string",
+                        "description": "почта пользователя"
+                    },
+                    {
+                        "name": "avatar",
+                        "type": "string | null",
+                        "description": "ссылка на аватар пользователя"
+                    }
+                ]
+            },
+            {
+                "code": 400,
+                "answer": "Bad Request"
+            }
+        ]
+    },
+    {
+        "route": "/api/users/:id",
+        "type": "GET",
+        "description": "Полечение пользователя по ID",
+        "params": {
+            "body": [],
+            "query": [ ],
+            "params": [
+                {
+                    "name": "id",
+                    "type": "int",
+                    "required": true,
+                    "description": "ID пользователя"
+                }
+            ]
+        },
+        "responses": [
+            {
+                "code": 200,
+                "answer": [
+                    {
+                        "name": "id",
+                        "type": "int",
+                        "description": "ID пользователя"
+                    },
+                    {
+                        "name": "nickname",
+                        "type": "string",
+                        "description": "имя пользователя"
+                    },
+                    {
+                        "name": "email",
+                        "type": "string",
+                        "description": "почта пользователя"
+                    },
+                    {
+                        "name": "avatar",
+                        "type": "string | null",
+                        "description": "ссылка на аватар пользователя"
+                    }
+                ]
+            },
+            {
+                "code": 400,
+                "answer": "Bad Request"
+            },
+            {
+                "code": 404,
+                "answer": "User Not Found"
+            }
+        ]
+    },
+    {
+        "route": "/api/users/:id",
+        "type": "PUT",
+        "description": "Обновление пользователя",
+        "params": {
+            "body": [
+                {
+                    "name": "nickname",
+                    "type": "string",
+                    "required": false,
+                    "description": "новое имя пользователя"
+                },
+                {
+                    "name": "email",
+                    "type": "string",
+                    "required": false,
+                    "description": "новая почта пользователя"
+                },
+                {
+                    "name": "avatar",
+                    "type": "string",
+                    "required": false,
+                    "description": "новая ссылка на аватар пользователя"
+                },
+                {
+                    "name": "password",
+                    "type": "string",
+                    "required": false,
+                    "description": "новый пароль от аккаунта"
+                }
+            ],
+            "query": [],
+            "params": [
+                {
+                    "name": "id",
+                    "type": "int",
+                    "required": true,
+                    "description": "ID обновляемого пользователя"
+                }
+            ]
+        },
+        "bodyExample":{
+            "nickname":"newguy43",
+            "email":"newguy43@mail.com",
+            "avatar": "https://thumbs.dreamstime.com/b/male-avatar-icon-flat-style-male-user-icon-cartoon-man-avatar-hipster-vector-stock-91462914.jpg",
+            "password":"qwerty12345"
+        },
+        "responses": [
+            {
+                "code": 200,
+                "answer": [
+                    {
+                        "name": "nickname",
+                        "type": "string",
+                        "description": "новое имя пользователя"
+                    },
+                    {
+                        "name": "email",
+                        "type": "string",
+                        "description": "новая почта пользователя"
+                    },
+                    {
+                        "name": "avatar",
+                        "type": "string",
+                        "description": "новая ссылка на аватар пользователя"
+                    },
+                    {
+                        "name": "password",
+                        "type": "string",
+                        "description": "новый пароль от аккаунта"
+                    }
+                ]
+            },
+            {
+                "code": 404,
+                "answer": "User Not Found"
+            },
+            {
+                "code": 400,
+                "answer": "Bad Request"
+            }
+        ]
+    },
+    {
+        "route": "/api/users/:id",
+        "type": "DELETE",
+        "description": "Удаление пользователя по ID",
+        "params": {
+            "body": [],
+            "query": [],
+            "params": [
+                {
+                    "name": "id",
+                    "type": "int",
+                    "required": true,
+                    "description": "ID удаляемого пользователя"
+                }
+            ]
+        },
+        "responses": [
+            {
+                "code": 204,
+                "answer": "User Deleted"
+            },
+            {
+                "code": 400,
+                "answer": "Bad Request"
+            }
+        ]
+    },
+    {
+        "route": "/api/resources",
+        "type": "GET",
+        "description": "Получение списка ресурсов",
+        "params": {
+            "body": [],
+            "query": [
+                {
+                    "name": "page",
+                    "type": "int",
+                    "required": false,
+                    "description": "номер страницы"
+                },
+                {
+                    "name": "pagination",
+                    "type": "int",
+                    "required": false,
+                    "description": "кол-во ресурсов на странице"
+                }
+            ],
+            "params": []
+        },
+        "responses": [
+            {
+                "code": 200,
+                "list": true,
+                "answer": [
+                    {
+                        "name": "id",
+                        "type": "int",
+                        "description": "ID ресурса"
+                    },
+                    {
+                        "name": "authorid",
+                        "type": "int",
+                        "description": "ID автора"
+                    },
+                    {
+                        "name": "authorname",
+                        "type": "string",
+                        "description": "имя автора ресурса"
+                    },
+                    {
+                        "name": "name",
+                        "type": "string",
+                        "description": "имя ресурса"
+                    },
+                    {
+                        "name": "data",
+                        "type": "string",
+                        "description": "данные ресурса"
+                    },
+                    {
+                        "name": "color",
+                        "type": "string | color",
+                        "description": "цвет ресурса"
+                    }
+                ]
+            },
+            {
+                "code": 400,
+                "answer": "Bad Request"
+            }
+        ]
+    },
+    {
+        "route": "/api/resources/:id",
+        "type": "GET",
+        "description": "Получение ресурса по ID",
+        "params": {
+            "body": [],
+            "query": [],
+            "params": [
+                {
+                    "name": "id",
+                    "type": "int",
+                    "required": true,
+                    "description": "ID ресурса"
+                }
+            ]
+        },
+        "responses": [
+            {
+                "code": 200,
+                "answer": [
+                    {
+                        "name": "id",
+                        "type": "int",
+                        "description": "ID ресурса"
+                    },
+                    {
+                        "name": "authorid",
+                        "type": "int",
+                        "description": "ID автора"
+                    },
+                    {
+                        "name": "authorname",
+                        "type": "string",
+                        "description": "имя автора ресурса"
+                    },
+                    {
+                        "name": "name",
+                        "type": "string",
+                        "description": "имя ресурса"
+                    },
+                    {
+                        "name": "data",
+                        "type": "string",
+                        "description": "данные ресурса"
+                    },
+                    {
+                        "name": "color",
+                        "type": "string | color",
+                        "description": "цвет ресурса"
+                    }
+                ]
+            },
+            {
+                "code": 404,
+                "answer": "Resource Not Found"
+            },
+            {
+                "code": 400,
+                "answer": "Bad Request"
+            }
+        ]
+    },
+    {
+        "route": "/api/resources",
+        "type": "POST",
+        "description": "Создание ресурса",
+        "params": {
+            "body": [
+                {
+                    "name": "authorid",
+                    "type": "int",
+                    "required": true,
+                    "description": "ID автора новго ресурса"
+                },
+                {
+                    "name": "name",
+                    "type": "string",
+                    "required": true,
+                    "description": "имя нового ресурса"
+                },
+                {
+                    "name": "data",
+                    "type": "string",
+                    "required": true,
+                    "description": "данные для нового ресурса"
+                },
+                {
+                    "name": "color",
+                    "type": "string | color",
+                    "required": true,
+                    "description": "цвет нового ресурса"
+                }
+            ],
+            "query": [],
+            "params": []
+        },
+        "bodyExample":{
+            "authorid": 1,
+            "name": "newresource",
+            "data": "Awesome data for new resorce",
+            "color": "#916411"
+        },
+        "responses": [
+            {
+                "code": 200,
+                "answer": [
+                    {
+                        "name": "id",
+                        "type": "int",
+                        "description": "ID ресурса"
+                    },
+                    {
+                        "name": "authorid",
+                        "type": "int",
+                        "description": "ID автора"
+                    },
+                    {
+                        "name": "authorname",
+                        "type": "string",
+                        "description": "имя автора ресурса"
+                    },
+                    {
+                        "name": "name",
+                        "type": "string",
+                        "description": "имя ресурса"
+                    },
+                    {
+                        "name": "data",
+                        "type": "string",
+                        "description": "данные ресурса"
+                    },
+                    {
+                        "name": "color",
+                        "type": "string | color",
+                        "description": "цвет ресурса"
+                    }
+                ]
+            },
+            {
+                "code": 400,
+                "answer": "Bad Request"
+            }
+        ]
+    },
+    {
+        "route": "/api/resources",
+        "type": "PUT",
+        "description": "Обновление ресурса",
+        "params": {
+            "body": [
+                {
+                    "name": "id",
+                    "type": "int",
+                    "required": true,
+                    "description": "ID ресурса"
+                },
+                {
+                    "name": "name",
+                    "type": "string",
+                    "required": false,
+                    "description": "новое имя ресурса"
+                },
+                {
+                    "name": "data",
+                    "type": "string",
+                    "required": false,
+                    "description": "новые данные ресурса"
+                },
+                {
+                    "name": "color",
+                    "type": "string | color",
+                    "required": false,
+                    "description": "новый цвет ресурса"
+                }
+            ],
+            "query": [],
+            "params": []
+        },
+        "bodyExample":{
+            "id": 1,
+            "name": "new resource name",
+            "data": "new data for resource",
+            "color": "#FF00FF"
+        },
+        "responses": [
+            {
+                "code": 200,
+                "answer": [
+                    {
+                        "name": "id",
+                        "type": "int",
+                        "description": "ID ресурса"
+                    },
+                    {
+                        "name": "authorid",
+                        "type": "int",
+                        "description": "ID автора"
+                    },
+                    {
+                        "name": "authorname",
+                        "type": "string",
+                        "description": "имя автора ресурса"
+                    },
+                    {
+                        "name": "name",
+                        "type": "string",
+                        "description": "имя ресурса"
+                    },
+                    {
+                        "name": "data",
+                        "type": "string",
+                        "description": "данные ресурса"
+                    },
+                    {
+                        "name": "color",
+                        "type": "string | color",
+                        "description": "цвет ресурса"
+                    }
+                ]
+            },
+            {
+                "code": 400,
+                "answer": "Bad Request"
+            },
+            {
+                "code": 404,
+                "answer": "Resource Not Found"
+            }
+        ]
+    },
+    {
+        "route": "/api/resources",
+        "type": "DELETE",
+        "description": "Удаление ресурса",
+        "params": {
+            "body": [
+                {
+                    "name": "id",
+                    "type": "int",
+                    "required":true,
+                    "description": "ID ресурса"
+                }
+            ],
+            "query": [],
+            "params": []
+        },
+        "bodyExample":{
+            "id": 2
+        },
+        "responses": [
+            {
+                "code": 204,
+                "answer": "Resource Deleted"
+            },
+            {
+                "code": 400,
+                "answer": "Bad Request"
+            },
+            {
+                "code": 404,
+                "answer": "Resource Not Found"
+            }
+        ]
+    }
+]

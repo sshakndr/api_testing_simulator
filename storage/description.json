@@ -1,0 +1,18 @@
+{
+    "toLanguage": "ru",
+    "flagIconText": "русская страница",
+    "title": "API testing simulator",
+    "request": "request",
+    "response": "response",
+    "send": "Send",
+    "documentation": "Documentation",
+    "showErrors": "show errors",
+    "showDocumentation": "show documentation",
+    "errorsInAPI": "Errors in API",
+    "keyParam": "Key param : type",
+    "bodyAttribute": "Body attribute : type",
+    "queryParam": "Query param : type",
+    "meansRequired": "means required]",
+    "code": "Code :",
+    "res": "Response : "
+}
