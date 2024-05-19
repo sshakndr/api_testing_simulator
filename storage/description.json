@@ -14,5 +14,11 @@
     "queryParam": "Query param : type",
     "meansRequired": "means required]",
     "code": "Code :",
-    "res": "Response : "
+    "res": "Response : ",
+    "descr1": "The API testing simulator is an API with built-in errors. Your task is to find all the errors.",
+    "descr2": "Below is the request form. On the left side there are buttons with all possible requests to the API. In the middle are editable fields for the request path and body. The response along with the status will appear on the right after the Send button is clicked.",
+    "descr3a": " You can also use third-party tools to access the API, for example ",
+    "important": "!IMPORTANT",
+    "descr3b": ", but in this case, if you connected via a public network, add some kind of unique key to the Authorization header so as not to interfere with anyone with the same ip.",
+    "descr4": "Below the request form is the documentation for the API, as well as errors."
 }
