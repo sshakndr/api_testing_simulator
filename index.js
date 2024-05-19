@@ -204,7 +204,7 @@ function getUsers(req){
     if (users !== undefined) {
         return users;
     } else {
-        usersCache.set(addr, usersBase);
+        usersCache.set(addr, structuredClone(usersBase));
         users = usersCache.get(addr);
         return users;
     }
@@ -216,7 +216,7 @@ function getResources(req){
     if (resources !== undefined) {
         return resources;
     } else {
-        resourcesCache.set(addr, resourcesBase);
+        resourcesCache.set(addr, structuredClone(resourcesBase));
         resources = resourcesCache.get(addr);
         return resources;
     }
@@ -396,7 +396,7 @@ app.delete("/api/resources", function(request,response){
         let ress = resources.filter(r=>{return r.id !== id});
         if (ress.length == resources.length) response.status(404).send("Resource Not Found");
         else{
-            resourcesCache.set(getAddr(request), ress);
+            resourcesCache.set(getAddr(request), structuredClone(ress));
             response.status(204).send("Resource Deleted");
         }
     }
